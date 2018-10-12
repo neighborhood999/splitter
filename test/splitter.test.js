@@ -4,6 +4,16 @@ import { BigNumber } from 'bignumber.js';
 const Splitter = artifacts.require('Splitter');
 
 const logEvent = ({ logs: [log] }) => log;
+const pGetBalance = address =>
+  new Promise((resolve, reject) => {
+    web3.eth.getBalance(address, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
 
 contract('Splitter', accounts => {
   const [Alice, Bob, Carol] = accounts;
@@ -18,7 +28,7 @@ contract('Splitter', accounts => {
       const value = web3.toWei('1', 'ether');
       const tx = await contract.split(Bob, Carol, { from: Alice, value });
       const contractAddress = logEvent(tx).address;
-      const contractHoldEther = web3.eth.getBalance(contractAddress);
+      const contractHoldEther = await pGetBalance(contractAddress);
 
       expect(contractHoldEther.toString(10)).to.equal(value.toString(10));
     });
