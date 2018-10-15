@@ -1,6 +1,9 @@
 pragma solidity ^0.4.24;
 
+import "./SafeMath.sol";
+
 contract Splitter {
+    using SafeMath for uint256;
     mapping(address => uint) public balances;
 
     event LogSplit(
@@ -42,14 +45,14 @@ contract Splitter {
         require(hasValue(msg.value), "msg.value require > 0");
         require(areAcceptable(first, second), "Recipient required");
 
-        uint256 half = msg.value / 2;
-        uint256 remainder = msg.value % 2;
+        uint256 half = msg.value.div(2);
+        uint256 remainder = msg.value.mod(2);
 
-        balances[first] = balances[first] + half;
-        balances[second] = balances[second] + half;
+        balances[first] = balances[first].add(half);
+        balances[second] = balances[second].add(half);
 
         if (remainder > 0) {
-            balances[msg.sender] = balances[msg.sender] + remainder;
+            balances[msg.sender] = balances[msg.sender].add(remainder);
         }
 
         emit LogSplit(msg.sender, first, second, half);
