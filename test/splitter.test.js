@@ -1,5 +1,6 @@
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 import { BigNumber } from 'bignumber.js';
+import expectedException from '../utils/expectedException';
 
 const Splitter = artifacts.require('Splitter');
 
@@ -26,7 +27,8 @@ contract('Splitter', accounts => {
   describe('split function', () => {
     it('should be hold 0.1 ether in contract before split', async () => {
       const value = web3.toWei('0.1', 'ether');
-      const tx = await splitter.split(bob, carol, { from: alice, value });
+      await splitter.split(bob, carol, { from: alice, value });
+
       const contractAddress = splitter.address;
       const contractHoldEther = await pGetBalance(contractAddress);
 
@@ -63,41 +65,25 @@ contract('Splitter', accounts => {
     it('should be fail if send the 0 ether', async () => {
       const value = web3.toWei('0', 'ether');
 
-      try {
-        await splitter.split(bob, carol, { from: alice, value });
-      } catch (err) {
-        assert.include(err.message, 'revert');
-      }
+      await expectedException(splitter.split(bob, carol, { from: alice, value }));
     });
 
     it('should be fail if the recipient are the same', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      try {
-        await splitter.split(bob, bob, { from: alice, value });
-      } catch (err) {
-        assert.include(err.message, 'revert');
-      }
+      await expectedException(splitter.split(bob, bob, { from: alice, value }));
     });
 
     it('should be fail if the recipient Bob address is empty', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      try {
-        await splitter.split('0x0', carol, { from: alice, value });
-      } catch (err) {
-        assert.include(err.message, 'revert');
-      }
+      await expectedException(splitter.split('0x0', carol, { from: alice, value }));
     });
 
     it('should be fail if the recipient Carol address is empty', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      try {
-        await splitter.split(bob, '0x0', { from: alice, value });
-      } catch (err) {
-        assert.include(err.message, 'revert');
-      }
+      await expectedException(splitter.split(bob, '0x0', { from: alice, value }));
     });
   });
 
