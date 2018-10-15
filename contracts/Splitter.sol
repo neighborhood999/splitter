@@ -14,7 +14,7 @@ contract Splitter {
     function areAcceptable(
         address recipient1,
         address recipient2
-    ) private view returns (bool isAcceptable) {
+    ) public view returns (bool isAcceptable) {
         require(recipient1 != recipient2, "Invalid Recipient");
         require(
             recipient1 != address(0),
@@ -47,7 +47,10 @@ contract Splitter {
 
         balances[first] = balances[first] + half;
         balances[second] = balances[second] + half;
-        balances[msg.sender] = balances[msg.sender] + remainder;
+
+        if (remainder > 0) {
+            balances[msg.sender] = balances[msg.sender] + remainder;
+        }
 
         emit LogSplit(msg.sender, first, second, half);
 
