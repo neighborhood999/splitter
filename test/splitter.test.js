@@ -16,30 +16,30 @@ const pGetBalance = address =>
   });
 
 contract('Splitter', accounts => {
-  const [Alice, Bob, Carol] = accounts;
+  const [alice, bob, carol] = accounts;
 
-  let contract;
+  let splitter;
   beforeEach('Deploy new contract instance', async () => {
-    contract = await Splitter.new({ from: Alice });
+    splitter = await Splitter.new({ from: alice });
   });
 
   describe('split function', () => {
-    it('should be hold 2 ether in contract before split', async () => {
-      const value = web3.toWei('1', 'ether');
-      const tx = await contract.split(Bob, Carol, { from: Alice, value });
-      const contractAddress = logEvent(tx).address;
+    it('should be hold 0.1 ether in contract before split', async () => {
+      const value = web3.toWei('0.1', 'ether');
+      const tx = await splitter.split(bob, carol, { from: alice, value });
+      const contractAddress = splitter.address;
       const contractHoldEther = await pGetBalance(contractAddress);
 
       expect(contractHoldEther.toString(10)).to.equal(value.toString(10));
     });
 
-    it('should be split 2 ether to the bob and carol', async () => {
-      const value = web3.toWei('1', 'ether');
+    it('should be split 0.1 ether to the bob and carol', async () => {
+      const value = web3.toWei('0.1', 'ether');
 
-      await contract.split(Bob, Carol, { from: Alice, value });
+      await splitter.split(bob, carol, { from: alice, value });
 
-      const recipientBob = await contract.balances(Bob);
-      const recipientCarol = await contract.balances(Carol);
+      const recipientBob = await splitter.balances(bob);
+      const recipientCarol = await splitter.balances(carol);
       const amount = BigNumber(value).dividedToIntegerBy(2);
 
       expect(recipientBob.toString(10)).to.equal(amount.toString(10));
@@ -49,11 +49,11 @@ contract('Splitter', accounts => {
     it('should be split wei to the recipient and deposit remainder', async () => {
       const value = web3.fromWei('1000000000000000001', 'wei');
 
-      await contract.split(Bob, Carol, { from: Alice, value });
+      await splitter.split(bob, carol, { from: alice, value });
 
-      const recipientBob = await contract.balances(Bob);
-      const recipientCarol = await contract.balances(Carol);
-      const senderAlice = await contract.balances(Alice);
+      const recipientBob = await splitter.balances(bob);
+      const recipientCarol = await splitter.balances(carol);
+      const senderAlice = await splitter.balances(alice);
 
       expect(recipientBob.toString(10)).to.equal(web3.toWei('500', 'finney'));
       expect(recipientCarol.toString(10)).to.equal(web3.toWei('500', 'finney'));
@@ -64,37 +64,37 @@ contract('Splitter', accounts => {
       const value = web3.toWei('0', 'ether');
 
       try {
-        await contract.split(Bob, Carol, { from: Alice, value });
+        await splitter.split(bob, carol, { from: alice, value });
       } catch (err) {
         assert.include(err.message, 'revert');
       }
     });
 
     it('should be fail if the recipient are the same', async () => {
-      const value = web3.toWei('2', 'ether');
+      const value = web3.toWei('0.1', 'ether');
 
       try {
-        await contract.split(Bob, Bob, { from: Alice, value });
+        await splitter.split(bob, bob, { from: alice, value });
       } catch (err) {
         assert.include(err.message, 'revert');
       }
     });
 
     it('should be fail if the recipient Bob address is empty', async () => {
-      const value = web3.toWei('2', 'ether');
+      const value = web3.toWei('0.1', 'ether');
 
       try {
-        await contract.split('0x0', Carol, { from: Alice, value });
+        await splitter.split('0x0', carol, { from: alice, value });
       } catch (err) {
         assert.include(err.message, 'revert');
       }
     });
 
     it('should be fail if the recipient Carol address is empty', async () => {
-      const value = web3.toWei('2', 'ether');
+      const value = web3.toWei('0.1', 'ether');
 
       try {
-        await contract.split(Bob, '0x0', { from: Alice, value });
+        await splitter.split(bob, '0x0', { from: alice, value });
       } catch (err) {
         assert.include(err.message, 'revert');
       }
@@ -103,14 +103,14 @@ contract('Splitter', accounts => {
 
   describe('split emit event', () => {
     it('should be emit LogSplit', async () => {
-      const value = web3.toWei('1', 'ether');
-      const tx = await contract.split(Bob, Carol, { from: Alice, value });
+      const value = web3.toWei('0.1', 'ether');
+      const tx = await splitter.split(bob, carol, { from: alice, value });
       const log = logEvent(tx);
 
       expect(log.event).to.equal('LogSplit');
-      expect(log.args.from).to.equal(Alice);
-      expect(log.args.recipient1).to.equal(Bob);
-      expect(log.args.recipient2).to.equal(Carol);
+      expect(log.args.from).to.equal(alice);
+      expect(log.args.recipient1).to.equal(bob);
+      expect(log.args.recipient2).to.equal(carol);
       expect(log.args.amount.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
@@ -119,19 +119,19 @@ contract('Splitter', accounts => {
     });
 
     it('should be emit LogWithdraw', async () => {
-      const value = web3.toWei('1', 'ether');
-      const tx = await contract.split(Bob, Carol, { from: Alice, value });
-      const withdraw = await contract.withdraw({ from: Bob });
+      const value = web3.toWei('0.1', 'ether');
+      const tx = await splitter.split(bob, carol, { from: alice, value });
+      const withdraw = await splitter.withdraw({ from: bob });
 
       const txLogEvent = logEvent(tx);
       expect(txLogEvent.event).to.equal('LogSplit');
-      expect(txLogEvent.args.from).to.equal(Alice);
-      expect(txLogEvent.args.recipient1).to.equal(Bob);
-      expect(txLogEvent.args.recipient2).to.equal(Carol);
+      expect(txLogEvent.args.from).to.equal(alice);
+      expect(txLogEvent.args.recipient1).to.equal(bob);
+      expect(txLogEvent.args.recipient2).to.equal(carol);
 
       const withdrawLogEvent = logEvent(withdraw);
       expect(withdrawLogEvent.event).to.equal('LogWithdraw');
-      expect(withdrawLogEvent.args.from).to.equal(Bob);
+      expect(withdrawLogEvent.args.from).to.equal(bob);
       expect(withdrawLogEvent.args.amount.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
