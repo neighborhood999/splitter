@@ -65,25 +65,37 @@ contract('Splitter', accounts => {
     it('should be fail if send the 0 ether', async () => {
       const value = web3.toWei('0', 'ether');
 
-      await expectedException(splitter.split(bob, carol, { from: alice, value }));
+      await expectedException(
+        () => splitter.split(bob, carol, { from: alice, value }),
+        3000000
+      );
     });
 
     it('should be fail if the recipient are the same', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      await expectedException(splitter.split(bob, bob, { from: alice, value }));
+      await expectedException(
+        () => splitter.split(bob, bob, { from: alice, value }),
+        3000000
+      );
     });
 
     it('should be fail if the recipient Bob address is empty', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      await expectedException(splitter.split('0x0', carol, { from: alice, value }));
+      await expectedException(
+        () => splitter.split('0x0', carol, { from: alice, value }),
+        3000000
+      );
     });
 
     it('should be fail if the recipient Carol address is empty', async () => {
       const value = web3.toWei('0.1', 'ether');
 
-      await expectedException(splitter.split(bob, '0x0', { from: alice, value }));
+      await expectedException(
+        () => splitter.split(bob, '0x0', { from: alice, value }),
+        3000000
+      );
     });
   });
 

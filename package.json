@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "ganache": "ganache-cli -b 10",
     "compile": "truffle compile",
     "test": "truffle test",
     "test:coverage": "solidity-coverage"
@@ -17,6 +18,7 @@
     "@babel/register": "^7.0.0",
     "bignumber.js": "^7.2.1",
     "chai": "^4.2.0",
+    "ganache-cli": "^6.1.8",
     "solidity-coverage": "^0.5.11",
     "truffle": "^4.1.14"
   }

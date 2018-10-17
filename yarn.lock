@@ -827,6 +827,12 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
+ganache-cli@^6.1.8:
+  version "6.1.8"
+  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.1.8.tgz#49a8a331683a9652183f82ef1378d17e1814fcd3"
+  dependencies:
+    source-map-support "^0.5.3"
+
 get-caller-file@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
