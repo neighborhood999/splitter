@@ -35,14 +35,8 @@ contract Splitter {
         return true;
     }
 
-    function hasValue(uint value) private pure returns (bool) {
-        require(value > 0, "msg.value equal 0");
-
-        return true;
-    }
-
     function split(address first, address second) public payable returns (bool) {
-        require(hasValue(msg.value), "msg.value require > 0");
+        require(msg.value > 0, "msg.value equal 0");
         require(areAcceptable(first, second), "Recipient required");
 
         uint256 half = msg.value.div(2);

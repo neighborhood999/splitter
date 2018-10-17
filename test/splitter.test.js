@@ -49,7 +49,7 @@ contract('Splitter', accounts => {
     });
 
     it('should be split wei to the recipient and deposit remainder', async () => {
-      const value = web3.fromWei('1000000000000000001', 'wei');
+      const value = new BigNumber(web3.toWei('1', 'ether')).plus(1).toString(10);
 
       await splitter.split(bob, carol, { from: alice, value });
 
@@ -131,6 +131,14 @@ contract('Splitter', accounts => {
       expect(withdrawLogEvent.event).to.equal('LogWithdraw');
       expect(withdrawLogEvent.args.from).to.equal(bob);
       expect(withdrawLogEvent.args.amount.toString(10)).to.equal(
+        BigNumber(value)
+          .dividedToIntegerBy(2)
+          .toString(10)
+      );
+
+      const contractAddress = splitter.address;
+      const contractHoldEther = await pGetBalance(contractAddress);
+      expect(contractHoldEther.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
           .toString(10)

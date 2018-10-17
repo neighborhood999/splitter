@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "ganache": "ganache-cli -b 10",
+    "ganache": "ganache-cli",
     "compile": "truffle compile",
     "test": "truffle test",
     "test:coverage": "solidity-coverage"
