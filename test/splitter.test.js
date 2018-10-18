@@ -1,20 +1,15 @@
 import { expect } from 'chai';
 import { BigNumber } from 'bignumber.js';
+import { default as Promise } from 'bluebird';
 import expectedException from '../utils/expectedException';
 
 const Splitter = artifacts.require('Splitter');
 
 const logEvent = ({ logs: [log] }) => log;
-const pGetBalance = address =>
-  new Promise((resolve, reject) => {
-    web3.eth.getBalance(address, (error, result) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
-      }
-    });
-  });
+
+if (typeof web3.eth.getBlockPromise !== 'function') {
+  Promise.promisifyAll(web3.eth, { suffix: 'Promise' });
+}
 
 contract('Splitter', accounts => {
   const [alice, bob, carol] = accounts;
@@ -30,7 +25,7 @@ contract('Splitter', accounts => {
       await splitter.split(bob, carol, { from: alice, value });
 
       const contractAddress = splitter.address;
-      const contractHoldEther = await pGetBalance(contractAddress);
+      const contractHoldEther = await web3.eth.getBalance(contractAddress);
 
       expect(contractHoldEther.toString(10)).to.equal(value.toString(10));
     });
@@ -137,7 +132,7 @@ contract('Splitter', accounts => {
       );
 
       const contractAddress = splitter.address;
-      const contractHoldEther = await pGetBalance(contractAddress);
+      const contractHoldEther = await web3.eth.getBalance(contractAddress);
       expect(contractHoldEther.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
