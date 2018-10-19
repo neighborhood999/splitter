@@ -25,7 +25,7 @@ contract('Splitter', accounts => {
       await splitter.split(bob, carol, { from: alice, value });
 
       const contractAddress = splitter.address;
-      const contractHoldEther = await web3.eth.getBalance(contractAddress);
+      const contractHoldEther = await web3.eth.getBalancePromise(contractAddress);
 
       expect(contractHoldEther.toString(10)).to.equal(value.toString(10));
     });
@@ -132,7 +132,7 @@ contract('Splitter', accounts => {
       );
 
       const contractAddress = splitter.address;
-      const contractHoldEther = await web3.eth.getBalance(contractAddress);
+      const contractHoldEther = await web3.eth.getBalancePromise(contractAddress);
       expect(contractHoldEther.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
