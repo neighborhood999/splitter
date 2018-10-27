@@ -2,6 +2,8 @@
 
 ![splitter smart contract by Solidity](https://flat.badgen.net/badge/ethereum/solidity/grey)
 
+![splitter dapp screenshot](./screenshot/splitter-dapp.png)
+
 ## Install
 
 ```sh
@@ -16,10 +18,18 @@ $ yarn run ganache
 
 ## Tests
 
-> Before running tests, you need to run TestRPC.
+> Before running tests, make sure you are already running **TestRPC**.
 
 ```sh
 $ yarn test
+```
+
+## Running DApp
+
+> Before running DApp, make sure you are already running **TestRPC**.
+
+```sh
+$ yarn start
 ```
 
 ## LICENSE

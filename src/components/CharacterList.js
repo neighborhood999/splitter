@@ -45,7 +45,7 @@ const CharacterList = ({ isLoading, characters, withdraw }) => (
           </div>
         </div>
       ))
-    )};
+    )}
   </div>
 );
 
