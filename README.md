@@ -24,7 +24,7 @@ $ yarn run ganache
 $ yarn test
 ```
 
-## Running DApp
+## DApp
 
 > Before running DApp, make sure you are already running **TestRPC**.
 
