@@ -3,7 +3,7 @@ import Eth from 'ethjs';
 import SplitterContext from './contexts/SplitterContext';
 import Header from './components/Header';
 import CharacterList from './components/CharacterList';
-import Splitter from './components/Splitter';
+import SendBalance from './components/SendBalance';
 import Footer from './components/Footer';
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from './constants';
 import './App.css';
@@ -80,7 +80,10 @@ class App extends Component {
         from: alice.address,
         value: Eth.toWei(amount, unit)
       })
-      .then(() => (this.amountInput.current.value = ''))
+      .then(() => {
+        this.amountInput.current.value = '';
+        this.setState({ amount: 0 });
+      })
       .catch(console.error);
   };
 
@@ -119,13 +122,16 @@ class App extends Component {
             characters={characters}
             withdraw={this.withdraw}
           />
-          <SplitterContext.Provider value={this.state}>
-            <Splitter
-              split={this.split}
-              setAmount={this.setAmount}
-              setUnit={this.setUnit}
-              amountInput={this.amountInput}
-            />
+          <SplitterContext.Provider
+            value={{
+              state: this.state,
+              split: this.split,
+              setAmount: this.setAmount,
+              setUnit: this.setUnit,
+              amountInput: this.amountInput
+            }}
+          >
+            <SendBalance />
           </SplitterContext.Provider>
           <Footer />
         </div>

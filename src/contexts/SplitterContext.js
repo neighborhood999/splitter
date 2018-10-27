@@ -5,6 +5,15 @@ const contract = {
   contractBalance: 0
 };
 
-const SplitterContext = React.createContext(contract);
+const context = React.createContext(contract);
 
-export default SplitterContext;
+const { Consumer } = context;
+
+export const withSplit = Component => props => (
+  <Consumer>
+    {value => <Component {...props} splitter={value} />}
+  </Consumer>
+);
+
+
+export default context;
