@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import Eth from 'ethjs';
 import SplitterContext from './contexts/SplitterContext';
 import Header from './components/Header';
@@ -114,7 +114,7 @@ class App extends Component {
     const { isLoading, characters } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <Header />
         <div className="container mt-2">
           <CharacterList
@@ -135,7 +135,7 @@ class App extends Component {
           </SplitterContext.Provider>
           <Footer />
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
