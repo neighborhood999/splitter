@@ -9,19 +9,18 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from './constants';
 import './App.css';
 
 class App extends Component {
-  state = {
-    isLoading: true,
-    eth: {},
-    splitter: {},
-    contractBalance: 0,
-    characters: [],
-    amount: 0,
-    unit: 'wei'
-  };
-
   constructor(props) {
     super(props);
 
+    this.state = {
+      isLoading: true,
+      eth: {},
+      splitter: {},
+      contractBalance: 0,
+      characters: [],
+      amount: 0,
+      unit: 'wei'
+    };
     this.amountInput = React.createRef();
   }
 
@@ -57,7 +56,7 @@ class App extends Component {
   setAmount = event => {
     const amount = parseInt(event.target.value);
 
-    this.setState({ amount });
+    this.setState(previousState => ({ ...previousState, amount }));
   };
 
   setUnit = event => {
@@ -65,7 +64,7 @@ class App extends Component {
     const unit = event.target.value;
 
     if (type.includes(unit)) {
-      this.setState({ unit });
+      this.setState(previousState => ({ ...previousState, unit }));
     }
 
     return;
