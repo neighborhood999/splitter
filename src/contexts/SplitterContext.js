@@ -1,7 +1,6 @@
 import React from 'react';
 
 const contract = {
-  isLoading: true,
   contractBalance: 0
 };
 

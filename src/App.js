@@ -13,7 +13,6 @@ class App extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,
       eth: {},
       splitter: {},
       contractBalance: 0,
@@ -40,13 +39,12 @@ class App extends Component {
 
         this.setState({
           characters,
-          isLoading: false,
           contractBalance: Eth.fromWei(contractBalance, 'ether')
         });
       } catch (err) {
         console.error(err);
       }
-    }, 2000);
+    }, 1500);
   }
 
   componentwillunmount() {
@@ -110,14 +108,13 @@ class App extends Component {
   }
 
   render() {
-    const { isLoading, characters } = this.state;
+    const { characters } = this.state;
 
     return (
       <Fragment>
         <Header />
         <div className="container mt-2">
           <CharacterList
-            isLoading={isLoading}
             characters={characters}
             withdraw={this.withdraw}
           />
