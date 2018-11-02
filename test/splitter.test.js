@@ -5,7 +5,7 @@ import expectedException from '../utils/expectedException';
 
 const Splitter = artifacts.require('Splitter');
 
-const logEvent = ({ logs: [log] }) => log;
+const getTxEvent1stLog = ({ logs: [log] }) => log;
 
 if (typeof web3.eth.getBlockPromise !== 'function') {
   Promise.promisifyAll(web3.eth, { suffix: 'Promise' });
@@ -61,8 +61,7 @@ contract('Splitter', accounts => {
       const value = web3.toWei('0', 'ether');
 
       await expectedException(
-        () => splitter.split(bob, carol, { from: alice, value }),
-        3000000
+        () => splitter.split(bob, carol, { from: alice, value })
       );
     });
 
@@ -70,8 +69,7 @@ contract('Splitter', accounts => {
       const value = web3.toWei('0.1', 'ether');
 
       await expectedException(
-        () => splitter.split(bob, bob, { from: alice, value }),
-        3000000
+        () => splitter.split(bob, bob, { from: alice, value })
       );
     });
 
@@ -79,8 +77,7 @@ contract('Splitter', accounts => {
       const value = web3.toWei('0.1', 'ether');
 
       await expectedException(
-        () => splitter.split('0x0', carol, { from: alice, value }),
-        3000000
+        () => splitter.split('0x0', carol, { from: alice, value })
       );
     });
 
@@ -88,8 +85,7 @@ contract('Splitter', accounts => {
       const value = web3.toWei('0.1', 'ether');
 
       await expectedException(
-        () => splitter.split(bob, '0x0', { from: alice, value }),
-        3000000
+        () => splitter.split(bob, '0x0', { from: alice, value })
       );
     });
   });
@@ -98,7 +94,7 @@ contract('Splitter', accounts => {
     it('should be emit LogSplit', async () => {
       const value = web3.toWei('0.1', 'ether');
       const tx = await splitter.split(bob, carol, { from: alice, value });
-      const log = logEvent(tx);
+      const log = getTxEvent1stLog(tx);
 
       expect(log.event).to.equal('LogSplit');
       expect(log.args.from).to.equal(alice);
@@ -116,16 +112,16 @@ contract('Splitter', accounts => {
       const tx = await splitter.split(bob, carol, { from: alice, value });
       const withdraw = await splitter.withdraw({ from: bob });
 
-      const txLogEvent = logEvent(tx);
-      expect(txLogEvent.event).to.equal('LogSplit');
-      expect(txLogEvent.args.from).to.equal(alice);
-      expect(txLogEvent.args.recipient1).to.equal(bob);
-      expect(txLogEvent.args.recipient2).to.equal(carol);
+      const log = getTxEvent1stLog(tx);
+      expect(log.event).to.equal('LogSplit');
+      expect(log.args.from).to.equal(alice);
+      expect(log.args.recipient1).to.equal(bob);
+      expect(log.args.recipient2).to.equal(carol);
 
-      const withdrawLogEvent = logEvent(withdraw);
-      expect(withdrawLogEvent.event).to.equal('LogWithdraw');
-      expect(withdrawLogEvent.args.from).to.equal(bob);
-      expect(withdrawLogEvent.args.amount.toString(10)).to.equal(
+      const withdrawLog = getTxEvent1stLog(withdraw);
+      expect(withdrawLog.event).to.equal('LogWithdraw');
+      expect(withdrawLog.args.from).to.equal(bob);
+      expect(withdrawLog.args.amount.toString(10)).to.equal(
         BigNumber(value)
           .dividedToIntegerBy(2)
           .toString(10)
